@@ -47,11 +47,16 @@ class Play extends Phaser.Scene {
         // add pointer input
         this.input.on('pointerdown', (pointer) => { // pointerdown = click event
             let shotDirection = pointer.y <= this.ball.y ? 1 : -1
-            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
+            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X)) // between is inclusive
             this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirection)
         })
 
         // cup/ball collision
+        // use collider so we don't have to set colliable and set check collide update
+        // collider = an event that happens is something that when things collide NOT THE COLLISION BOX
+        this.physics.add.collider(this.ball, this.cup, (ball, cup) => { // the two objects are automatically passed in
+            ball.destroy()
+        })
 
         // ball/wall collision
 
