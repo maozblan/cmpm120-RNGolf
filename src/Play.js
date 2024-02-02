@@ -66,6 +66,9 @@ class Play extends Phaser.Scene {
             let shotDirectionX = pointer.x <= this.ball.x ? 1 : -1
             this.ball.body.setVelocityX(this.SHOT_VELOCITY_X * shotDirectionX) // between is inclusive
             this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirectionY)
+            this.shotCounterNum++;
+            this.shotCounter.text = `shot counter: ${this.shotCounterNum}`
+            this.percentage.text = `succesful shot percentage: ${Math.round(this.scoreNum / this.shotCounterNum * 100, 4)}%`
         })
 
         // cup/ball collision
@@ -75,6 +78,9 @@ class Play extends Phaser.Scene {
             ball.setVelocity(0)
             ball.x = width/2
             ball.y = height-height/10
+            this.scoreNum++;
+            this.score.text = `score: ${this.scoreNum}`
+            this.percentage.text = `succesful shot percentage: ${Math.round(this.scoreNum / this.shotCounterNum * 100, 4)}%`
         })
 
         // ball/wall collision
@@ -95,7 +101,11 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        this.scoreCounter = this.add.text(0, 0, 'shot counter: ', textConfig)
+        this.shotCounter = this.add.text(0, 0, 'shot counter: 0', textConfig)
+        this.score = this.add.text(0, 15, 'score: 0', textConfig)
+        this.percentage = this.add.text(0, 30, 'succesful shot percentage: 0%', textConfig)
+        this.shotCounterNum = 0
+        this.scoreNum = 0
     }
 
     update() {
