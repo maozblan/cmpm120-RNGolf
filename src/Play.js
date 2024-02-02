@@ -1,11 +1,17 @@
 class Play extends Phaser.Scene {
     constructor() {
         super('playScene')
+        // don't put variables here, usually
+        // this is instantiated ONCE! variables can get overwritten
     }
 
     init() {
         // useful variables
-
+        // we usually define our constants here
+        this.SHOT_VELOCITY_X = 200
+        this.SHOT_VELOCITY_Y_MIN = 700
+        this.SHOT_VELOCITY_Y_MAX = 1100
+        // there's no gravity, just forces, bounce, and drag
     }
 
     preload() {
@@ -22,14 +28,28 @@ class Play extends Phaser.Scene {
         this.grass = this.add.image(0, 0, 'grass').setOrigin(0)
 
         // add cup
+        this.cup = this.physics.add.sprite(width/2, height/10, 'cup')
+        this.cup.body.setCircle(this.cup.width/4) 
+        this.cup.body.setOffset(this.cup.width/4) 
+        this.cup.body.setImmovable(true) // when colliding with another obj, it doesn't move
         
         // add ball
+        this.ball = this.physics.add.sprite(width/2, height-height/10, 'ball')
+        this.ball.body.setCircle(this.ball.width/2)
+        this.ball.body.setCollideWorldBounds(true)
+        this.ball.body.setBounce(0.5)   // medium bounce
+        this.ball.body.setDamping(true).setDrag(0.5) // damping makes angular velocity slightly more accurate
 
         // add walls
 
         // add one-way
 
         // add pointer input
+        this.input.on('pointerdown', (pointer) => { // pointerdown = click event
+            let shotDirection = pointer.y <= this.ball.y ? 1 : -1
+            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
+            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirection)
+        })
 
         // cup/ball collision
 
