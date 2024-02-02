@@ -44,11 +44,14 @@ class Play extends Phaser.Scene {
         let wallA = this.physics.add.sprite(0, height/4, 'wall')
         wallA.setX(Phaser.Math.Between(0+wallA.width/2, width-wallA.width/2))
         wallA.body.setImmovable(true)
-        let wallB = this.physics.add.sprite(0, height/2, 'wall')
-        wallB.setX(Phaser.Math.Between(0+wallB.width/2, width-wallB.width/2))
-        wallB.body.setImmovable(true)
 
-        this.walls = this.add.group([wallA, wallB])
+        this.wallB = this.physics.add.sprite(0, height/2, 'wall')
+        this.wallB.setX(Phaser.Math.Between(0+this.wallB.width/2, width-this.wallB.width/2))
+        this.wallB.body.setImmovable(true)
+        // bouncy wall
+        this.wallBounce = 1
+
+        this.walls = this.add.group([wallA, this.wallB])
 
 
         // add one-way
@@ -59,9 +62,10 @@ class Play extends Phaser.Scene {
 
         // add pointer input
         this.input.on('pointerdown', (pointer) => { // pointerdown = click event
-            let shotDirection = pointer.y <= this.ball.y ? 1 : -1
-            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X)) // between is inclusive
-            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirection)
+            let shotDirectionY = pointer.y <= this.ball.y ? 1 : -1
+            let shotDirectionX = pointer.x <= this.ball.x ? 1 : -1
+            this.ball.body.setVelocityX(this.SHOT_VELOCITY_X * shotDirectionX) // between is inclusive
+            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirectionY)
         })
 
         // cup/ball collision
@@ -79,17 +83,33 @@ class Play extends Phaser.Scene {
 
         // ball/one-way collision
         this.physics.add.collider(this.ball, this.oneway)
+
+        let textConfig = {
+            color: '#FFF',
+            fontFamily: 'Courier',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+                left: 10
+            },
+            fixedWidth: 0
+        }
+        this.scoreCounter = this.add.text(0, 0, 'shot counter: ', textConfig)
     }
 
     update() {
-
+        this.wallB.x += this.wallBounce
+        if (this.wallB.x >= width-this.wallB.width/2 || this.wallB.x <= 0+this.wallB.width/2) {
+            this.wallBounce *= -1
+        }
     }
 }
 /*
 CODE CHALLENGE
 Try to implement at least 3/4 of the following features during the remainder of class (hint: each takes roughly 15 or fewer lines of code to implement):
 [x] Add ball reset logic on successful shot
-[ ] Improve shot logic by making pointer’s relative x-position shoot the ball in correct x-direction
-[ ] Make one obstacle move left/right and bounce against screen edges
+[x] Improve shot logic by making pointer’s relative x-position shoot the ball in correct x-direction
+[x] Make one obstacle move left/right and bounce against screen edges
 [ ] Create and display shot counter, score, and successful shot percentage
 */
