@@ -106,6 +106,8 @@ class Play extends Phaser.Scene {
         this.percentage = this.add.text(0, 30, 'succesful shot percentage: 0%', textConfig)
         this.shotCounterNum = 0
         this.scoreNum = 0
+        
+        conseole.log('sanity check', this.wallB, this.oneway, this.shotCounter);
     }
 
     update() {
@@ -121,5 +123,5 @@ Try to implement at least 3/4 of the following features during the remainder of 
 [x] Add ball reset logic on successful shot
 [x] Improve shot logic by making pointer’s relative x-position shoot the ball in correct x-direction
 [x] Make one obstacle move left/right and bounce against screen edges
-[ ] Create and display shot counter, score, and successful shot percentage
+[x] Create and display shot counter, score, and successful shot percentage
 */
