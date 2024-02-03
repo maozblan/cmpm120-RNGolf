@@ -107,7 +107,7 @@ class Play extends Phaser.Scene {
         this.shotCounterNum = 0
         this.scoreNum = 0
         
-        conseole.log('sanity check', this.wallB, this.oneway, this.shotCounter);
+        console.log('sanity check', this.wallB, this.oneway, this.shotCounter);
     }
 
     update() {
